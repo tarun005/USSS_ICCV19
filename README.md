@@ -15,3 +15,7 @@ IDD: https://idd.insaan.iiit.ac.in/
 
 ### How to run
 ``python segment.py --basedir <basedir> --lr 0.001 --num-epochs 200 --batch-size 8 --savedir <savedir> --datasets <D1> [<D2> ..]  --num-samples <N> --alpha 0 --beta 0 --resnet <resnet_v> --model drnet``
+
+## Acknowledgements
+
+Part of the code is written from the official code release of Dilated Residual Networks (https://github.com/fyu/drn), as well as IDD Dataset github page (https://github.com/AutoNUE/public-code).
