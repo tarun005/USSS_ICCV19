@@ -9,12 +9,14 @@ import pdb
 from PIL import Image, ImageOps
 from argparse import ArgumentParser
 from EntropyLoss import EmbeddingLoss
+from iouEval import iouEval, getColorEntry
 
 from torch.optim import SGD, Adam, lr_scheduler
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, ConcatDataset
 import torchvision
 import torch.nn.functional as F
+
 
 from dataset_loader import *
 import transform as transforms
@@ -102,7 +104,7 @@ def train(args, get_dataset, model, enc=False):
 	NUM_LABELS = get_dataset.num_labels
 
 	dataset_train = {dname: get_dataset(dname, 'train', args.num_samples) for dname in datasets}
-	dataset_val = {dname: get_dataset(dname, 'val') for dname in datasets}
+	dataset_val = {dname: get_dataset(dname, 'val',100) for dname in datasets}
 	# dataset_unlabeled = {dname: get_dataset(dname, co_transform, 'train_extra' , mode='unlabeled') for dname in datasets}
 	dataset_unlabeled = {dname: get_dataset(dname, 'train'  , mode='unlabeled') for dname in datasets}
 
@@ -127,7 +129,7 @@ def train(args, get_dataset, model, enc=False):
 
 	loader_train = {dname:DataLoader(dataset_train[dname], num_workers=args.num_workers, batch_size=args.batch_size, 
 							shuffle=True) for dname in datasets}
-	loader_val = {dname:DataLoader(dataset_val[dname], num_workers=args.num_workers, batch_size=6, 
+	loader_val = {dname:DataLoader(dataset_val[dname], num_workers=args.num_workers, batch_size=2, 
 							shuffle=True, drop_last=True) for dname in datasets}
 
 	# epoch_iters = np.min([len(loader_train[dname]) for dname in datasets])
