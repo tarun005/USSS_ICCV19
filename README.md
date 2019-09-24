@@ -8,6 +8,7 @@ Code for Universal Semi Supervised Semantic Segmentation accepted to ICCV 2019, 
 
 Python >= 2.6  
 PyTorch >= 1.0.0
+The ImageNet pretrained models are downloaded from the repository at https://github.com/fyu/drn. 
 
 ### Datasets
 Cityscapes: https://www.cityscapes-dataset.com/  
