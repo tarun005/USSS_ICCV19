@@ -440,7 +440,6 @@ class Net(nn.Module):
                         , 'resnet_50':drn_d_54 , 'resnet_101':drn_d_105}
 		arch = resnet_archs[resnet]
 		
-		# model = model_name(pretrained=pretsrained, num_classes=1000)
 		model = arch(pretrained=pretrained, num_classes=1000)
 		pmodel = nn.DataParallel(model)
 		if pretrained_model is not None:

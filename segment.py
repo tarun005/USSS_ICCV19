@@ -53,10 +53,7 @@ class load_data():
 
 	def Img_transform(self, name, size, split='train'):
 
-		# if len(args.crop_size) == 1:
-		# 	crop_size = (args.crop_size[0] , args.crop_size[0]) ## W x H
-		# else:
-		# 	crop_size = (args.crop_size[1] , args.crop_size[0])
+		
 
 		assert (isinstance(size, tuple) and len(size)==2)
 
@@ -123,21 +120,18 @@ def train(args, get_dataset, model, enc=False):
 			dataset_train[d].image_paths = dataset_train[d].image_paths*int(np.ceil(float(max_train_size)/len(dataset_train[d].image_paths)))
 			dataset_train[d].label_paths = dataset_train[d].label_paths*int(np.ceil(float(max_train_size)/len(dataset_train[d].label_paths)))
 
-		# if entropy:
-		# 	dataset_unlabeled[d].image_paths = dataset_unlabeled[d].image_paths*int(np.ceil(float(n_unlabeled)/len(dataset_unlabeled[d].image_paths)))
-		# 	dataset_unlabeled[d].label_paths = dataset_unlabeled[d].label_paths*int(np.ceil(float(n_unlabeled)/len(dataset_unlabeled[d].label_paths)))
-
+		
 	loader_train = {dname:DataLoader(dataset_train[dname], num_workers=args.num_workers, batch_size=args.batch_size, 
 							shuffle=True) for dname in datasets}
 	loader_val = {dname:DataLoader(dataset_val[dname], num_workers=args.num_workers, batch_size=2, 
 							shuffle=True, drop_last=True) for dname in datasets}
 
-	# epoch_iters = np.min([len(loader_train[dname]) for dname in datasets])
+	
 
 	if entropy:
 		loader_unlabeled = {dname:DataLoader(dataset_unlabeled[dname], num_workers=args.num_workers, batch_size=args.batch_size, 
 								shuffle=True, drop_last=True) for dname in datasets}
-		# epoch_iters = np.min([ np.min([len(loader[dname]) for dname in datasets]) for loader in [loader_train , loader_unlabeled]])
+		
 
 	savedir = f'../save_drnet/{args.savedir}'
 
@@ -167,8 +161,7 @@ def train(args, get_dataset, model, enc=False):
 			else:
 				myfile.write("Epoch\t\tS1\t\tS2\t\tTotal\n")
 
-	#TODO: reduce memory in first gpu: https://discuss.pytorch.org/t/multi-gpu-training-memory-usage-in-balance/4163/4        #https://github.com/pytorch/pytorch/issues/1893
-
+	
 	if args.model == 'drnet':
 		optimizer = SGD(model.optim_parameters(), args.lr, 0.9,  weight_decay=1e-4)     ## scheduler DR-Net
 	if args.cuda:
@@ -305,8 +298,6 @@ def train(args, get_dataset, model, enc=False):
 				time_taken.append(time.time() - start_time)
 				optimizer.step()
 
-
-				
 
 				if args.steps_loss > 0 and (itr % args.steps_loss == 0 or itr == n_iters-1):
 					average = {d:np.around(sum(epoch_loss[d]) / len(epoch_loss[d]) , 3) for d in datasets}
@@ -516,18 +507,7 @@ def main(args, get_dataset):
 	# 	model = torch.nn.DataParallel(model).cuda()
 	
 	if args.state:
-		#if args.state is provided then load this state for training
-		#Note: this only loads initialized weights. If you want to resume a training use "--resume" option!!
-		"""
-		try:
-			model.load_state_dict(torch.load(args.state))
-		except AssertionError:
-			model.load_state_dict(torch.load(args.state,
-				map_location=lambda storage, loc: storage))
-		#When model is saved as DataParallel it adds a model. to each key. To remove:
-		#state_dict = {k.partition('model.')[2]: v for k,v in state_dict}
-		#https://discuss.pytorch.org/t/prefix-parameter-names-in-saved-model-if-trained-by-multi-gpu/494
-		"""
+		
 		def load_my_state_dict(model, state_dict):  #custom function to load model when not all dict keys are there
 			own_state = model.state_dict()
 			state_dict = {k.partition('module.')[2]: v for k,v in state_dict.items()}
@@ -543,9 +523,8 @@ def main(args, get_dataset):
 			print("Loaded pretrained model ... ")
 			return model
 
-		#print(torch.load(args.state))
+		
 		state_dict = torch.load(args.state)
-		# state_dict = {k.partition('module.')[2]: v for k,v in state_dict.items()}
 		model = load_my_state_dict(model, state_dict)
 
 
