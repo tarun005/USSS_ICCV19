@@ -1,6 +1,7 @@
 # USSS_ICCV19
 
-Code for Universal Semi Supervised Semantic Segmentation accepted to ICCV 2019, full Paper available at https://arxiv.org/abs/1811.10323. 
+Code for Universal Semi Supervised Semantic Segmentation accepted to ICCV 2019. <br> 
+Full Paper available at https://arxiv.org/abs/1811.10323. 
 
 
 
