@@ -7,7 +7,7 @@ Code for Universal Semi Supervised Semantic Segmentation accepted to ICCV 2019, 
 ### Requirements
 
 Python >= 2.6  
-PyTorch >= 1.0.0
+PyTorch >= 1.0.0 <br>
 The ImageNet pretrained models are downloaded from the repository at https://github.com/fyu/drn. 
 
 ### Datasets
@@ -19,4 +19,4 @@ IDD: https://idd.insaan.iiit.ac.in/
 
 ## Acknowledgements
 
-Part of the code is written from the official code release of Dilated Residual Networks (https://github.com/fyu/drn), as well as IDD Dataset github page (https://github.com/AutoNUE/public-code).
+Part of the code is heavily borrowed from the official code release of Dilated Residual Networks (https://github.com/fyu/drn) and IDD Dataset (https://github.com/AutoNUE/public-code).
