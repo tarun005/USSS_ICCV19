@@ -7,8 +7,6 @@ import torch
 
 from torch.utils.data import Dataset
 import glob
-import sys
-
 
 
 class Relabel:
@@ -298,7 +296,6 @@ if __name__ == "__main__":
 
     def show_data(ds):
         print(len(ds))
-        import random
         i = random.randrange(len(ds))
         img, gt = ds[i]
         color_gt = colorize(gt, ds.color_map)
