@@ -47,37 +47,37 @@ class EmbeddingLoss(torch.nn.Module):
 
 		return centroids , nlabels
 
-	def _update_centroids(self, encoder_op, targets):
+	# def _update_centroids(self, encoder_op, targets):
 
-		embeds = {key:torch.zeros(1, self.n_labels[key], self.embed_dim).cuda() for key in self.datasets}
-		nlabels = {key:torch.zeros(1 , self.n_labels[key] ,1, dtype=torch.long).cuda() for key in self.datasets}
+	# 	embeds = {key:torch.zeros(1, self.n_labels[key], self.embed_dim).cuda() for key in self.datasets}
+	# 	nlabels = {key:torch.zeros(1 , self.n_labels[key] ,1, dtype=torch.long).cuda() for key in self.datasets}
 
-		for key in self.datasets:
+	# 	for key in self.datasets:
 			
-			if self.dnum[key] in self.d_id:
+	# 		if self.dnum[key] in self.d_id:
 
-				encoder_partial = torch.index_select(encoder_op , 0 , self.dataset_index[key])
-				labels = torch.index_select(targets , 0 , self.dataset_index[key])
-				labels_onehot = torch.zeros_like(labels).cuda()
-				labels_onehot = labels_onehot.repeat(1,self.n_labels[key],1,1).scatter_(1,labels,1)
-				nlabels[key] = labels_onehot.sum(-1).sum(-1).sum(0).view(1,-1,1).data
+	# 			encoder_partial = torch.index_select(encoder_op , 0 , self.dataset_index[key])
+	# 			labels = torch.index_select(targets , 0 , self.dataset_index[key])
+	# 			labels_onehot = torch.zeros_like(labels).cuda()
+	# 			labels_onehot = labels_onehot.repeat(1,self.n_labels[key],1,1).scatter_(1,labels,1)
+	# 			nlabels[key] = labels_onehot.sum(-1).sum(-1).sum(0).view(1,-1,1).data
 
-				# ########## ---- Memory Intensive ------######
-				# centroids = (labels_onehot.float().unsqueeze(2) * encoder_partial.unsqueeze(1)).data
-				# embeds[key] = centroids.sum(0 , keepdim=True).sum(3 , keepdim=True).sum(4 , keepdim=True).squeeze(-1).squeeze(-1) # 1 x C x E
-				# ########## ---- Memory Intensive ------######
+	# 			# ########## ---- Memory Intensive ------######
+	# 			# centroids = (labels_onehot.float().unsqueeze(2) * encoder_partial.unsqueeze(1)).data
+	# 			# embeds[key] = centroids.sum(0 , keepdim=True).sum(3 , keepdim=True).sum(4 , keepdim=True).squeeze(-1).squeeze(-1) # 1 x C x E
+	# 			# ########## ---- Memory Intensive ------######
 
-				########## ----Time Intensive ------######
-				centroids = []
-				for l_mapid in range(self.n_labels[key]):
-					label_map = labels_onehot[:,l_mapid,:,:].unsqueeze(1).float() ## N x 1 x H x W
-					centroid_map = label_map * encoder_partial ## N x E x H x W
-					centroid_map = centroid_map.sum(0 , keepdim=True).sum(2,keepdim=True).sum(3,keepdim=True).view(1,-1) # 1 x E
-					centroids.append(centroid_map)
+	# 			########## ----Time Intensive ------######
+	# 			centroids = []
+	# 			for l_mapid in range(self.n_labels[key]):
+	# 				label_map = labels_onehot[:,l_mapid,:,:].unsqueeze(1).float() ## N x 1 x H x W
+	# 				centroid_map = label_map * encoder_partial ## N x E x H x W
+	# 				centroid_map = centroid_map.sum(0 , keepdim=True).sum(2,keepdim=True).sum(3,keepdim=True).view(1,-1) # 1 x E
+	# 				centroids.append(centroid_map)
 
-				embeds[key] = torch.cat(centroids , dim=0)
-				embeds[key] = embeds[key].unsqueeze(0).data
-				########## ----Time Intensive ------######
+	# 			embeds[key] = torch.cat(centroids , dim=0)
+	# 			embeds[key] = embeds[key].unsqueeze(0).data
+	# 			########## ----Time Intensive ------######
 
 		return embeds, nlabels			
 
